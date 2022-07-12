@@ -23,6 +23,7 @@ include(
     "rewrite-maven",
     "rewrite-properties",
     "rewrite-protobuf",
+    "rewrite-visualizer",
     "rewrite-xml",
     "rewrite-yaml",
     "rewrite-test",
