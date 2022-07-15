@@ -301,8 +301,9 @@ public abstract class ControlFlowNode {
             ControlFlowJavaPrinter<Integer> printer = new ControlFlowJavaPrinter<>(getNodeValues());
             Cursor commonBlock = getCommonBlock();
             printer.visit(commonBlock.getValue(), capture, commonBlock.getParentOrThrow());
-            return StringUtils.trimIndentPreserveCRLF(capture.getOut()).
+//            return StringUtils.trimIndentPreserveCRLF(capture.getOut()).
                     replaceAll("(?m)^[ \t]*\r?\n", "");
+            return capture.getOut();
         }
 
         /**
