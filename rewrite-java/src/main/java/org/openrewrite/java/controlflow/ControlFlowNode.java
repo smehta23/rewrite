@@ -301,8 +301,7 @@ public abstract class ControlFlowNode {
             ControlFlowJavaPrinter<Integer> printer = new ControlFlowJavaPrinter<>(getNodeValues());
             Cursor commonBlock = getCommonBlock();
             printer.visit(commonBlock.getValue(), capture, commonBlock.getParentOrThrow());
-//            return StringUtils.trimIndentPreserveCRLF(capture.getOut()).
-                    replaceAll("(?m)^[ \t]*\r?\n", "");
+//            return StringUtils.trimIndentPreserveCRLF(capture.getOut());
             return capture.getOut();
         }
 
@@ -320,7 +319,7 @@ public abstract class ControlFlowNode {
             }
             // Obtains the deepest J.Block cursor in the AST which
             // encompasses all the cursors in the basic block.
-            return shortestList.get(shortestList.size() - 1);
+            return shortestList.get(0);
         }
 
         private List<J> getNodeValues() {
