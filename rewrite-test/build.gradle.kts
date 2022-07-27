@@ -44,3 +44,12 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
 }
+
+tasks.withType<Javadoc> {
+    isFailOnError = false
+    exclude("org/openrewrite/java/**")
+}
+
+repositories {
+    maven (url = uri("https://jitpack.io"))
+}

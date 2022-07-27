@@ -413,10 +413,9 @@ public abstract class ControlFlowNode {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PACKAGE, staticName = "create")
-    static final class Start extends ControlFlowNode implements GraphTerminator {
+    public static final class Start extends ControlFlowNode implements GraphTerminator {
         @Getter
         private final GraphType graphType;
-
         private ControlFlowNode successor = null;
 
         @Override
@@ -460,7 +459,7 @@ public abstract class ControlFlowNode {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PACKAGE, staticName = "create")
-    static final class End extends ControlFlowNode implements GraphTerminator{
+    public static final class End extends ControlFlowNode implements GraphTerminator{
         @Getter
         private final GraphType graphType;
         private ControlFlowNode successor = null;
