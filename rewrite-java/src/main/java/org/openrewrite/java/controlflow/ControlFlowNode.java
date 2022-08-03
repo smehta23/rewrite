@@ -363,6 +363,7 @@ public abstract class ControlFlowNode {
                 throw new ControlFlowIllegalStateException(
                         exceptionMessageBuilder("Basic block already has a successor ").thisNode(this).current(this.successor).otherNode(successor)
                 );
+            }
             this.successor = successor;
         }
 
