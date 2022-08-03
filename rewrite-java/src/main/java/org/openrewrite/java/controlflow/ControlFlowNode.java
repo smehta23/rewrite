@@ -120,7 +120,7 @@ public abstract class ControlFlowNode {
      * A control flow node that represents a branching point in the code.
      */
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static final class ConditionNode extends ControlFlowNode {
+    static final class ConditionNode extends ControlFlowNode {
         private final Cursor condition;
         private final boolean truthFirst;
 
@@ -274,7 +274,7 @@ public abstract class ControlFlowNode {
      * @see <a href="https://en.wikipedia.org/wiki/Basic_block">Wikipedia: Basic Block</a>
      */
     @RequiredArgsConstructor(access = AccessLevel.PACKAGE, staticName = "create")
-    public static final class BasicBlock extends ControlFlowNode {
+    static final class BasicBlock extends ControlFlowNode {
         @Getter
         private ControlFlowNode successor;
         private final List<Cursor> node = new ArrayList<>();
@@ -409,7 +409,7 @@ public abstract class ControlFlowNode {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PACKAGE, staticName = "create")
-    public static final class Start extends ControlFlowNode implements GraphTerminator {
+    static final class Start extends ControlFlowNode implements GraphTerminator {
         @Getter
         private final GraphType graphType;
         private ControlFlowNode successor = null;
@@ -455,7 +455,7 @@ public abstract class ControlFlowNode {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PACKAGE, staticName = "create")
-    public static final class End extends ControlFlowNode implements GraphTerminator{
+    static final class End extends ControlFlowNode implements GraphTerminator{
         @Getter
         private final GraphType graphType;
         private ControlFlowNode successor = null;
