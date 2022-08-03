@@ -49,7 +49,3 @@ tasks.withType<Javadoc> {
     isFailOnError = false
     exclude("org/openrewrite/java/**")
 }
-
-repositories {
-    maven (url = uri("https://jitpack.io"))
-}
