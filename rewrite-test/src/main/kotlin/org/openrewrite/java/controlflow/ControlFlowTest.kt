@@ -152,7 +152,7 @@ interface ControlFlowTest : RewriteTest {
                                 }
                             })
 //                            ControlFlowVisualizer.printCFG(controlFlow, nodeNumbers)
-                            ControlFlowVisualizer.printCFG(controlFlow)
+                            ControlFlowVisualizer.showCFG(controlFlow)
 
                             block.withMarkers(
                                 block.markers.searchResult(
@@ -1740,6 +1740,27 @@ interface ControlFlowTest : RewriteTest {
                     return null;
                 }
             }
+            """
+        )
+    )
+    @Test
+    fun `objects print` () = rewriteRun(
+        java(
+            """
+                class Test {
+                    void test() {
+                        Integer i = new Integer(1);
+                        System.out.println(i);
+                    }
+                }
+            """,
+            """
+                class Test {
+                    void test() /*~~(BB: 1 CN: 1 EX: 1 | L)~~>*/{
+                        Integer i = new Integer(1);
+                        System.out.println(i);
+                    }
+                }
             """
         )
     )
