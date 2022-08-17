@@ -15,10 +15,7 @@
  */
 package org.openrewrite.java.controlflow;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.openrewrite.Cursor;
 import org.openrewrite.Incubating;
@@ -45,6 +42,7 @@ import static org.openrewrite.java.controlflow.ControlFlowIllegalStateException.
 @Incubating(since = "7.25.0")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class ControlFlowNode {
+
     final Set<ControlFlowNode> predecessors = Collections.newSetFromMap(new IdentityHashMap<>());
 
     abstract Set<ControlFlowNode> getSuccessors();
@@ -291,14 +289,15 @@ public abstract class ControlFlowNode {
             ControlFlowJavaPrinter<Integer> printer = new ControlFlowJavaPrinter<>(getNodeValues());
             Cursor commonBlock = getCommonBlock();
             printer.visit(commonBlock.getValue(), capture, commonBlock.getParentOrThrow());
-            return StringUtils.trimIndentPreserveCRLF(capture.getOut()).
-                    replaceAll("(?m)^[ \t]*\r?\n", "");
+//            return StringUtils.trimIndentPreserveCRLF(capture.getOut()).
+//                    replaceAll("(?m)^[ \t]*\r?\n", "");
+            return capture.getOut();
         }
 
         /**
          * The highest common {@link J.Block} that contains all the statements in this basic block.
          */
-        Cursor getCommonBlock() {
+        public Cursor getCommonBlock() {
             // For each cursor in the block, computes the list of J.Blocks the cursor belongs in.
             // Then, gets the list of J.Blocks that appear in all the basic block's cursors' cursor paths
             // (by taking the smallest list)
@@ -309,10 +308,10 @@ public abstract class ControlFlowNode {
             }
             // Obtains the deepest J.Block cursor in the AST which
             // encompasses all the cursors in the basic block.
-            return shortestList.get(shortestList.size() - 1);
+            return shortestList.get(0);
         }
 
-        private List<J> getNodeValues() {
+        public List<J> getNodeValues() {
             return node.stream().map(Cursor::<J>getValue).collect(Collectors.toList());
         }
 

@@ -39,6 +39,7 @@ final class ControlFlowVisualizationVisitor<P> extends JavaIsoVisitor<P> {
     private final ControlFlowDotFileGenerator dotFileGenerator;
 
     private final boolean darkMode;
+    private static Optional<ControlFlowSummary> controlFlowSummary = Optional.empty();
 
     @Override
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, P p) {
@@ -50,6 +51,10 @@ final class ControlFlowVisualizationVisitor<P> extends JavaIsoVisitor<P> {
         return m;
     }
 
+    Optional<ControlFlowSummary> getControlFlowSummary() {
+        return controlFlowSummary;
+    }
+
     @Override
     public J.Block visitBlock(J.Block block, P p) {
         J.Block b = super.visitBlock(block, p);
@@ -57,8 +62,10 @@ final class ControlFlowVisualizationVisitor<P> extends JavaIsoVisitor<P> {
         final boolean isMethodDeclaration = methodDeclaration != null && methodDeclaration.getBody() == b;
 
         boolean isStaticOrInitBlock = J.Block.isStaticOrInitBlock(getCursor());
+        J.Block bNew = b;
         if (isMethodDeclaration || isStaticOrInitBlock) {
             return ControlFlow.startingAt(getCursor()).findControlFlow().map(controlFlow -> {
+                controlFlowSummary = Optional.of(controlFlow);
                 // maps basic block and condition nodes to the first statement in the node (the node leader)
                 Map<J, ControlFlowNode.BasicBlock> leadersToBlocks =
                         controlFlow
@@ -80,6 +87,7 @@ final class ControlFlowVisualizationVisitor<P> extends JavaIsoVisitor<P> {
                         "BB: " + controlFlow.getBasicBlocks().size() +
                                 " CN: " + controlFlow.getConditionNodeCount() +
                                 " EX: " + controlFlow.getExitCount();
+
                 if (dotFileGenerator != null) {
                     String graphName = methodDeclaration != null ? methodDeclaration.getSimpleName() : b.isStatic() ? "static block" : "init block";
                     String dotFile = dotFileGenerator.visualizeAsDotfile(graphName, darkMode, controlFlow);

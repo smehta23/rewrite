@@ -9,6 +9,8 @@ import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
 
 import javax.swing.*;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import java.awt.*;
 import java.util.Map;
 
@@ -25,14 +27,17 @@ public class GraphShower {
     private final Map<Node, ControlFlowNode> nodeToNode;
 
     boolean loop;
+    String commonMethodBlock;
 
 
 
-    public GraphShower(Map<ControlFlowNode, Integer> nodeToIndex) {
+    public GraphShower(Map<ControlFlowNode, Integer> nodeToIndex, String commonMethodBlock) {
         ControlFlowGraph cfg = new ControlFlowGraph.ControlFlowGraphBuilder()
                 .nodeToIndex(nodeToIndex)
                 .expanded(false)
                 .build();
+
+        this.commonMethodBlock = commonMethodBlock;
 
         graph = cfg.loadGraph();
 
@@ -51,6 +56,7 @@ public class GraphShower {
         };
         mainPanel.setLayout(new BorderLayout());
         codeArea = new JTextArea();
+        codeArea.setText("--Select a Control Flow Node--");
         codeArea.setEditable(false);
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -90,20 +96,34 @@ public class GraphShower {
             if (nodeToNode.get(graph.getNode(id)) instanceof ControlFlowNode.BasicBlock) {
                 ControlFlowNode.BasicBlock basicBlock = (ControlFlowNode.BasicBlock) nodeToNode.get(graph.getNode(id));
                 codeArea.setText(basicBlock.getStatementsWithinBlock());
-                codeArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                codeArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
                 codeArea.setForeground(Color.white);
                 codeArea.setBackground(Color.BLACK);
+
+//                String blockString = basicBlock.getStatementsWithinBlock();
+//
+//                Highlighter highlighter = codeArea.getHighlighter();
+//                Highlighter.HighlightPainter painter =
+//                        new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
+//                int p0 = blockString.
+//                int p1 = p0 + "world".length();
+//                highlighter.addHighlight(p0, p1, painter );
+//
+//                JOptionPane.showMessageDialog(null, new JScrollPane(textArea));
             } else {
-                codeArea.setForeground(Color.BLACK);
-                codeArea.setText("--Select a Basic Block--");
-                codeArea.setBackground(Color.WHITE);
+                codeArea.setForeground(Color.WHITE);
+                codeArea.setText(commonMethodBlock);
+                codeArea.setBackground(Color.BLACK);
             }
 
             codeArea.setEditable(false);
         }
 
         public void buttonReleased(String id) {
-            System.out.println("Button released on node " + id);
+
+            codeArea.setForeground(Color.WHITE);
+            codeArea.setText(commonMethodBlock);
+            codeArea.setBackground(Color.BLACK);
         }
 
         public void mouseOver(String id) {

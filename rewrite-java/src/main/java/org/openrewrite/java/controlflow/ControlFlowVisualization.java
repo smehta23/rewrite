@@ -22,6 +22,8 @@ import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 
+import java.util.Optional;
+
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class ControlFlowVisualization extends Recipe {
@@ -29,8 +31,10 @@ public class ControlFlowVisualization extends Recipe {
             description = "Also output with a Dotfile which can be then later visualized by Graphviz.",
             example = "true"
     )
-    boolean includeDotfile;
-    boolean darkMode;
+    private boolean includeDotfile;
+    private boolean darkMode;
+
+    private static ControlFlowVisualizationVisitor cfs;
 
     @Override
     public String getDisplayName() {
@@ -42,10 +46,13 @@ public class ControlFlowVisualization extends Recipe {
         return "Visualize the control flow of a Java program.";
     }
 
+    public Optional<ControlFlowSummary> getControlFlowSummary () {
+        return this.cfs.getControlFlowSummary();
+    }
+
     @Override
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new ControlFlowVisualizationVisitor<>(
-                includeDotfile ? ControlFlowDotFileGenerator.create() : null,
-                darkMode);
+        cfs = new ControlFlowVisualizationVisitor<Integer>(includeDotfile ? ControlFlowDotFileGenerator.create() : null, darkMode);
+        return cfs;
     }
 }

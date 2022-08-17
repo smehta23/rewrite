@@ -5,6 +5,8 @@ plugins {
 dependencies {
     implementation(project(":rewrite-java"))
     implementation(project(":rewrite-test"))
+    implementation(project(":rewrite-visualizer"))
+
 
     implementation("org.assertj:assertj-core:latest.release")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))

@@ -61,7 +61,7 @@ final class ControlFlowJavaPrinter<P> extends JavaPrinter<P> {
         // Customize the block to change the prefix that starts this block
         // This results in a block that is more readable when printed
         J.Block customized = block.withPrefix(block.getEnd());
-        return super.visitBlock(customized, p);
+        return super.visitBlock(block, p);
     }
 
     @Override

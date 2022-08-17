@@ -64,7 +64,7 @@ public class ControlFlowGraph {
                 ControlFlowNode.BasicBlock basicBlock = (ControlFlowNode.BasicBlock) node;
                 Node n = graph.addNode(String.valueOf(nodeToIndex.get(node)));
                 n.setAttribute("ui.class", "BasicBlock");
-                n.setAttribute("ui.label", basicBlock.getStatementsWithinBlock());
+                n.setAttribute("ui.label", basicBlock.getStatementsWithinBlock().replaceAll("(?m)^[ \t]*\r?\n", ""));
                 abstractNodeToVisualNode.put(n, node);
 
             } else if (node instanceof ControlFlowNode.ConditionNode) {

@@ -15,6 +15,14 @@
  */
 package org.openrewrite.java.controlflow;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.openrewrite.*;
+import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.java.JavaPrinter;
+import org.openrewrite.java.JavaVisitor;
+import org.openrewrite.java.tree.J;
+
 import java.util.*;
 
 
@@ -30,13 +38,27 @@ public class ControlFlowVisualizer {
             index++;
         }
 
-        GraphShower shower = new GraphShower(nodeToIndex);
+        ControlFlowNode cn = summary
+                .getAllNodes()
+                .stream()
+                .filter(node -> node instanceof ControlFlowNode.BasicBlock)
+                .findFirst().get();
+        ControlFlowNode.BasicBlock basicBlock = (ControlFlowNode.BasicBlock) cn;
+
+        PrintOutputCapture<Integer> capture
+                = new PrintOutputCapture<>(0);
+        JavaPrinter<Integer> printer = new JavaPrinter<>();
+        printer.visit(basicBlock.getCommonBlock().getValue(), capture, basicBlock.getCommonBlock().getParentOrThrow());
+
+        GraphShower shower = new GraphShower(
+                nodeToIndex, capture.getOut());
         shower.runGraph();
 
         System.out.println("Graph shown.");
 
 
     }
+
 
     public static void createSVG(ControlFlowSummary summary) {
         Set<ControlFlowNode> all = summary.getAllNodes();

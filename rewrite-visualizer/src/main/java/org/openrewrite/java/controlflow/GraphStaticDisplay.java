@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated // raw DOT files are generated instead
 public class GraphStaticDisplay {
 
 

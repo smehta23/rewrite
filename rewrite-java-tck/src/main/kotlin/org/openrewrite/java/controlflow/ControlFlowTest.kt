@@ -17,16 +17,56 @@ package org.openrewrite.java.controlflow
 
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.openrewrite.ExecutionContext
 import org.openrewrite.Issue
+import org.openrewrite.Recipe
+import org.openrewrite.TreeVisitor
 import org.openrewrite.java.Assertions.java
-import org.openrewrite.test.TypeValidation
+import org.openrewrite.java.JavaIsoVisitor
+import org.openrewrite.java.tree.J
 import org.openrewrite.test.RecipeSpec
 import org.openrewrite.test.RewriteTest
+import org.openrewrite.test.TypeValidation
 
 @Suppress("FunctionName", "UnusedAssignment", "UnnecessaryLocalVariable", "ConstantConditions")
 interface ControlFlowTest : RewriteTest {
+
+    class ControlFlowInteractiveViz() : Recipe() {
+        override fun getDisplayName(): String {
+            return "Visualizing control flow"
+        }
+
+        constructor(showInteractive: Boolean) : this() {
+            var rec = ControlFlowVisualization(false, false)
+            if (showInteractive) {
+                doNext(object : Recipe() {
+                    override fun getDisplayName(): String {
+                        return "Show interactive"
+                    }
+                    override fun getVisitor(): TreeVisitor<*, ExecutionContext> {
+                        return object: JavaIsoVisitor<ExecutionContext>() {
+                            override fun visitBlock(block: J.Block, p: ExecutionContext): J.Block {
+                                val methodDeclaration = cursor.firstEnclosing(J.MethodDeclaration::class.java)
+                                val isMethod = methodDeclaration?.body == block
+                                val isStaticOrInitBlock = J.Block.isStaticOrInitBlock(cursor)
+
+                                if (isMethod || isStaticOrInitBlock) {
+                                    ControlFlow.startingAt(cursor).findControlFlow().map { controlFlow ->
+                                        ControlFlowVisualizer.showCFG(controlFlow)}
+                                }
+                                return super.visitBlock(block, p)
+                            }
+                        }
+                    }
+
+                })
+            }
+            doNext(rec)
+
+        }
+    }
     override fun defaults(spec: RecipeSpec) {
-        spec.recipe(ControlFlowVisualization(false,false))
+        spec.recipe(ControlFlowInteractiveViz(true))
         spec.expectedCyclesThatMakeChanges(1).cycles(1)
     }
 
